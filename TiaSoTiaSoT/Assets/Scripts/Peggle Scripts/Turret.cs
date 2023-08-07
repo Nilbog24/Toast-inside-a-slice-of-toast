@@ -16,11 +16,8 @@ public class Turret : MonoBehaviour
     public Transform projectileTransform;
     // This boolean determines whether or not the player can fire.
     public bool canFire;
-    // These two variables are used to make it so that there's a cooldown between firing.
-    private float timer;
-    public float timeBetweenFiring;
-    // This will be assigned the player controller script so that variables and methods from it can be used here.
-    private PlayerControll playerControllerScript;
+    private GameManager gameManager;
+    
 
     // Start is called before the first frame update
     // In this method the mainCam variable will be assigned the camera component
@@ -28,7 +25,7 @@ public class Turret : MonoBehaviour
     void Start()
     {
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerControll>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
     }
 
@@ -50,11 +47,9 @@ public class Turret : MonoBehaviour
         // Then if timer is greater than the cooldown length the canFire will become true and the timer will be reset.
         if(!canFire)
         {
-            timer += Time.deltaTime;
-            if(timer > timeBetweenFiring)
+            if()// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
             {
                 canFire = true;
-                timer = 0;
             }
         }
         
@@ -70,7 +65,7 @@ public class Turret : MonoBehaviour
         // The the cooldown length with become 68.1 years long.
         // The reason for that last part is because without it the player would sill be able to shoot after the game was over.
         // Now they still can but they'd have to wait 68.1 years to do so.
-        if(playerControllerScript.gameOver)
+        if(Turret.Fireable)
         {
             canFire = false;
             timeBetweenFiring = 2147483647;
