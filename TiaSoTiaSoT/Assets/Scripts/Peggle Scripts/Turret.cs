@@ -47,7 +47,7 @@ public class Turret : MonoBehaviour
         // Then if timer is greater than the cooldown length the canFire will become true and the timer will be reset.
         if(!canFire)
         {
-            if()// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
+            if(canFire)// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
             {
                 canFire = true;
             }
@@ -65,10 +65,10 @@ public class Turret : MonoBehaviour
         // The the cooldown length with become 68.1 years long.
         // The reason for that last part is because without it the player would sill be able to shoot after the game was over.
         // Now they still can but they'd have to wait 68.1 years to do so.
-        if(Turret.Fireable)
+        if(canFire)
         {
             canFire = false;
-            timeBetweenFiring = 2147483647;
+    
         }
     }
 }

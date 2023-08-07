@@ -64,7 +64,6 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
             Destroy(other.gameObject);
-            gameManager.UpdateScore(1);
         }
         // If the other object isn't an enemy, a player, or another arrow then it's velocity will become zero.
         // After a second the projectile will be destroyed.
