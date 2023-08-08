@@ -23,7 +23,7 @@ public class Dialogue : MonoBehaviour
     {
         StopSpeaking();
         
-        speaking = StartCoroutine(Speaking(speech, additive, speaker));
+        speaking = StartCoroutine(Speaking(speech, false, speaker));
     }
 
     /// <summary>
