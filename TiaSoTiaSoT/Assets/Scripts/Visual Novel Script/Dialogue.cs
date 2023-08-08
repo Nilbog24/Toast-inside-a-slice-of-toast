@@ -19,10 +19,21 @@ public class Dialogue : MonoBehaviour
         
     }
 
-    public void Say()
+    public void Say(string speech, string speaker = "")
     {
         StopSpeaking();
+        
+        speaking = StartCoroutine(Speaking(speech, additive, speaker));
+    }
 
+    /// <summary>
+    /// Say Something to be added to what is already on the speech box. 
+    /// </summary>
+    public void SayAdd(string speech, string speaker = "")
+    {
+        StopSpeaking();
+        SpeechText.text = targetSpeech;
+        speaking = StartCoroutine(Speaking(speech, true, speaker));
     }
 
     public void StopSpeaking()
@@ -36,10 +47,43 @@ public class Dialogue : MonoBehaviour
     
 
     public bool isSpeaking {get{return speaking != null;}}
+    [HideInInspector] public bool isWaitingForUserInput = false;
+
+    string targetSpeech = "";
     Coroutine speaking = null;
-    IEnumerator Speaking()
+    IEnumerator Speaking(string speech, bool additive, string speaker = "")
     {
+        SpeechLayer.SetActive(true);
+        targetSpeech = speech;
+
+        if(!additive)
+            SpeechText.text = "";
+        else
+            targetSpeech = SpeechText.text + targetSpeech;
+        CharacterText.text = DetermineSpeaker(speaker); //temporary
+        isWaitingForUserInput = false;
+
+        while(SpeechText.text != targetSpeech)
+        {
+            SpeechText.text += targetSpeech[targetSpeech.text.Length];
+            yield return new WaitForEndOfFrame();
+        }
+
+        //Text Finished
+        isWaitingForUserInput = true;
+        while(isWaitingForUserInput)
+            yield return new WaitForEndOfFrame();
         
+        StopSpeaking();
+    }
+
+    string DetermineSpeaker(string s)
+    {
+        string retVal = CharacterText.text; //Default return is the current name
+        if(s != CharacterText.text && s != "")
+            retVal = (s.ToLower().Contains("narrator")) ? "" : s;
+
+        return retVal;
     }
 
     [System.Serializable]
@@ -48,12 +92,12 @@ public class Dialogue : MonoBehaviour
         /// <summary>
         /// The main panel containg all dialogue related elements in the UI.
         /// </summary>
-        public GameObject speechPanel;
-        public Text speakerNameText;
-        public Text speechText;
+        public GameObject SpeechLayer;
+        public Text CharacterText;
+        public Text SpeechText;
     }
-    public GameObject speechPanel {get{return elements.speechPanel;}}
-    public Text speakerNameText {get{return elements.speechNameText;}}
-    public Text speechText {get{return elements.speechText;}}
+    public GameObject SpeechLayer {get{return elements.SpeechLayer;}}
+    public Text CharacterText {get{return elements.CharacterText;}}
+    public Text SpeechText {get{return elements.SpeechText;}}
 
 }
