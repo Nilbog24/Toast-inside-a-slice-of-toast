@@ -65,7 +65,7 @@ public class Dialogue : MonoBehaviour
 
         while(SpeechText.text != targetSpeech)
         {
-            SpeechText.text += targetSpeech[targetSpeech.text.Length];
+            SpeechText.text += targetSpeech[targetSpeech.Length];
             yield return new WaitForEndOfFrame();
         }
 
