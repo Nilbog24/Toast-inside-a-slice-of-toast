@@ -16,6 +16,8 @@ public class Character
     
     public bool enabled {get{return root.gameObject.activeInHeirarchy;} set{root.gameObject.SetActive(value);}}
 
+    public Vector2 anchorPadding {get{return root.anchorMax - root.anchorMin;}}
+
     DialogueSystem dialogue;
 
     /// <summary>
@@ -31,6 +33,82 @@ public class Character
             dialogue.Say(speech, characterName);
         else
             dialogue.SayAdd(speech, characterName);
+    }
+
+    Vector2 targetPosition;
+    Coroutine moving;
+    bool isMoving{get{return moving != null;}}
+    /// <summary>
+    /// Move to a specific point relative to the canvas space. (1.1) = far top right, (0.0) = far bottom left, (0.5,0.5) = middle
+    /// </summary>
+    /// <param name="Target"></param>
+    /// <param name="speed"></param>
+    /// <param name="smooth"></param>
+    public void MoveTo(Vector2 Target, float speed, bool smooth = true)
+    {
+        //If we are moving, stop moving.
+        StopMoving();
+        //start moving coroutine
+        moving = CharacterManager.instance.StartCoroutine(Moving(Target, speed, smooth));
+    }
+
+    /// <summary>
+    /// Stops the character in its tracks, either setting it immediatly at the target position or not.
+    /// </summary>
+    /// <param name="arriveAtTargetPositionImmediately"></param>
+    public void StopMoving(bool arriveAtTargetPositionImmediately = false)
+    {
+        if (isMoving)
+        {
+            CharacterManager.instance.StopCoroutine (moving);
+            if(arriveAtTargetPositionImmediately)
+                SetPosition(targetPosition);
+        }
+        moving = null;
+    }
+
+    /// <summary>
+    /// Immediatelt set the position of this character to the intended target.
+    /// </summary>
+    /// <param name="target"></param>
+    public void SetPosition(Vector2 target)
+    {
+        Vector2 padding = anchorPadding;
+        float maxX = 1f - padding.x;
+        float maxY = 1f - padding.y;
+        Vector2 minAnchorTarget = new Vector2(maxX * targetPosition.x, maxY * targetPosition.y);   
+        root.anchorMin = minAnchorTarget;
+        root.anchorMax = root.anchorMin + padding;
+    }
+
+    /// <summary>
+    /// The coroutine that runs gradually to move the character towards a position.
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="speed"></param>
+    /// <param name="smooth"></param>
+    /// <returns></returns>
+    IEnumerator Moving(Vector2 target, float speed, bool smooth)
+    {
+        targetPosition = target;
+        //Now we want to get the padding between the anchors of this character so we know what their min and max positions are.
+        Vector2 padding = anchorPadding;
+        // now get the limitations for 0 to 100% movements. The farthest a character can move to the right before reaching 100% should be the 1 value
+        float maxX = 1f - padding.x;
+        float maxY = 1f - padding.y;
+
+        //now get the actual position target for the minimum anchors (left bottom bounds) of the character. because maxX and maxY are just percentages.
+        Vector2 minAnchorTarget = new Vector2(maxX * targetPosition.x, maxY * targetPosition.y);
+        speed *= Time.deltaTime;
+
+        while(root.anchorMin != minAnchorTarget)
+        {
+            root.anchorMin = (!smooth) ? Vector2.MoveTowards(root.anchorMin, minAnchorTarget, speed) : Vector2.Lerp(root.anchorMin, minAnchorTarget, speed);
+            root.anchorMax = root.anchorMin + padding;
+            yield return new WaitForEndOfFrame();
+        }
+
+        StopMoving();
     }
 
     /// <summary>
