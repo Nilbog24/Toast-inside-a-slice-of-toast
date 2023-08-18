@@ -33,7 +33,7 @@ public class CharacterManager : MonoBehaviour
     /// Tries to get a charavter by the name  provided from the character list.
     /// </summary>
     /// <param name="characterName"></param>
-    public Character GetCharacter(string characterName, bool createCharacterIfDoesNotExist = true)
+    public Character GetCharacter(string characterName, bool createCharacterIfDoesNotExist = true, bool enableCreatedCharactersOnStart = true)
     {
         // Search our dictionary to find the character quickly if  it is already in our scene.
         int index  = -1;
@@ -43,7 +43,7 @@ public class CharacterManager : MonoBehaviour
         }
         else if (createCharacterIfDoesNotExist)
         {
-            return CreateCharacter(characterName);
+            return CreateCharacter(characterName, enableCreatedCharactersOnStart);
         }
 
         return null;
@@ -54,9 +54,9 @@ public class CharacterManager : MonoBehaviour
     /// </summary>
     /// <param name="characterName"></param>
     /// <returns></returns>
-    public Character CreateCharacter(string characterName)
+    public Character CreateCharacter(string characterName, bool enableOnStart = true)
     {
-        Character newCharacter = new Character (characterName);
+        Character newCharacter = new Character (characterName, enableOnStart);
 
         characterDictionary.Add(characterName, characters.Count);
         characters.Add(newCharacter);

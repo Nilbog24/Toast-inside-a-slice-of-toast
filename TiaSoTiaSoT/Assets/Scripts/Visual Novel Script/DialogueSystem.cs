@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dialogue : MonoBehaviour
+public class DialogueSystem : MonoBehaviour
 {
 
-    public static Dialogue instance;
+    public static DialogueSystem instance;
     public ELEMENTS elements;
 
     void Awake()

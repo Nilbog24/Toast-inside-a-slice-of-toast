@@ -11,20 +11,33 @@ public class Character
     /// <summary>
     /// The root is the container for all of the images related ot the character in the scene.
     /// </summary>
+ 
     [HideInInspector] public RectTransform root;
+    
+    public bool enabled {get{return root.gameObject.activeInHeirarchy;} set{root.gameObject.SetActive(value);}}
 
-     DialogueSystem dialogue;
+    DialogueSystem dialogue;
 
-    public void Say(string speech)
+    /// <summary>
+    /// Make this character say something.
+    /// </summary>
+    /// <param name="speech"></param>
+    public void Say(string speech, bool add = false)
     {
-        dialogue.Say(speech, characterName);
+        if(!enabled)
+            enabled = true;
+
+        if(!add)
+            dialogue.Say(speech, characterName);
+        else
+            dialogue.SayAdd(speech, characterName);
     }
 
     /// <summary>
     /// Create a new character.
     /// </summary>
     /// <param name="_name"></param>
-    public Character(string _name)
+    public Character(string _name, bool enableOnStart = true)
     {
         CharacterManager cm = CharacterManager.instance;
         // Locate the character prefab.
@@ -38,6 +51,8 @@ public class Character
         renderers.renderer = ob.GetComponentInChildren<RawImage> ();
 
         dialogue = DialogueSystem.instance;
+
+        enabled = enableOnStart;
 
     }
 
