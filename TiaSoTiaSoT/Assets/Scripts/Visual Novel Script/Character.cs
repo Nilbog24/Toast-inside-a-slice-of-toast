@@ -7,34 +7,35 @@ using UnityEngine.UI;
 [System.Serializable]
 public class Character 
 {
-    public string name;
+    public string characterName;
     /// <summary>
     /// The root is the container for all of the images related ot the character in the scene.
     /// </summary>
  
     [HideInInspector] public RectTransform root;
+
+    public bool isMultiLayerCharacter{get{return renderers.renderer == null;}}
     
-    public bool enabled {get{return root.gameObject.activeInHeirarchy;} set{root.gameObject.SetActive(value);}}
+    public bool enabled {get{ return root.gameObject.activeInHierarchy;} set{ root.gameObject.SetActive (value);}}
 
     public Vector2 anchorPadding {get{return root.anchorMax - root.anchorMin;}}
 
     DialogueSystem dialogue;
 
     /// <summary>
-    /// Make this character say something.
-    /// </summary>
-    /// <param name="speech"></param>
-    public void Say(string speech, bool add = false)
-    {
-        if(!enabled)
-            enabled = true;
+	/// Make this character say something.
+	/// </summary>
+	/// <param name="speech">Speech.</param>
+	public void Say(string speech, bool add = false)
+	{
+		if (!enabled)
+			enabled = true;
 
-        if(!add)
-            dialogue.Say(speech, characterName);
-        else
-            dialogue.SayAdd(speech, characterName);
-    }
-
+		if (!add)
+			dialogue.Say (speech, characterName);
+		else
+			dialogue.SayAdd (speech, characterName);
+	}
     Vector2 targetPosition;
     Coroutine moving;
     bool isMoving{get{return moving != null;}}
@@ -111,6 +112,19 @@ public class Character
         StopMoving();
     }
 
+    //Began Transitioning Characters\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    public Sprite GetSprite(int index = 0)
+    {
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Characters/"+characterName);
+
+        Debug.Log (sprites.Length);
+
+        return sprites[index];
+    }
+
+
+    //End Trasitioning Characters\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
     /// <summary>
     /// Create a new character.
     /// </summary>
@@ -124,9 +138,14 @@ public class Character
         GameObject ob = GameObject.Instantiate(prefab, cm.CharacterLayer);
 
         root = ob.GetComponent<RectTransform> ();
-        name = _name;
+        characterName = _name;
 
         renderers.renderer = ob.GetComponentInChildren<RawImage> ();
+        if(isMultiLayerCharacter)
+        {
+            renderers.bodyRenderer = ob.transform.Find ("BodyLayer").GetComponentInChildren<Image> ();
+            renderers.expressionRenderer = ob.transform.Find ("ExpressionLayer").GetComponentInChildren<Image> ();
+        }
 
         dialogue = DialogueSystem.instance;
 

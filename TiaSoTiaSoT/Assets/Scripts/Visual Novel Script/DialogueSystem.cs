@@ -41,8 +41,9 @@ public class DialogueSystem : MonoBehaviour
         if(isSpeaking)
         {
             StopCoroutine(speaking);
-            speaking = null;
+            
         }
+        speaking = null;
     }
     
 

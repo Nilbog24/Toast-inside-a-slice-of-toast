@@ -29,10 +29,13 @@ public class CharacterManager : MonoBehaviour
         instance = this;
     }
 
-    /// <summary>
-    /// Tries to get a charavter by the name  provided from the character list.
-    /// </summary>
-    /// <param name="characterName"></param>
+	/// <summary>
+	/// Try to get a character by the name provided from the character list.
+	/// </summary>
+	/// <returns>The character.</returns>
+	/// <param name="characterName">Character name.</param>
+	/// <param name="createCharacterIfDoesNotExist">If set to <c>true</c> create character if does not exist.</param>
+	/// <param name="enableCreatedCharacterOnStart">If set to <c>true</c> enable created character on start.</param>
     public Character GetCharacter(string characterName, bool createCharacterIfDoesNotExist = true, bool enableCreatedCharactersOnStart = true)
     {
         // Search our dictionary to find the character quickly if  it is already in our scene.
@@ -72,4 +75,5 @@ public class CharacterManager : MonoBehaviour
         public Vector2 bottomRight = new Vector2 (1f, 0);
         public Vector2 topLeft = new Vector2 (0, 1f);
     }
+    public static CHARACTERPOSITIONS characterPositions = new CHARACTERPOSITIONS();
 }
