@@ -76,4 +76,5 @@ public class CharacterManager : MonoBehaviour
         public Vector2 topLeft = new Vector2 (0, 1f);
     }
     public static CHARACTERPOSITIONS characterPositions = new CHARACTERPOSITIONS();
+
 }
