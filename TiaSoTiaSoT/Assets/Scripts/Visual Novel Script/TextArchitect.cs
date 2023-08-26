@@ -30,7 +30,16 @@ public class TextArchitect
         this.speed = speed;
         this.useEncapsulation = useEncapsulation;
 
-        buildProcess = new DialogueSystem.instance.StartCoroutine(Construction());
+        buildProcess = DialogueSystem.instance.StartCoroutine(Construction());
+    }
+
+    public void Stop()
+    {
+        if(isConstructing)
+        {
+            DialogueSystem.instance.StopCoroutine(buildProcess);
+        }
+        buildProcess = null;
     }
 
     IEnumerator Construction()
@@ -54,6 +63,25 @@ public class TextArchitect
             {
                 //store the current text into something that can be referenced as a restart point as tagged sections of text are added and removed.
                 curText = _currentText;
+                ENCAPSULATED_TEXT encapsulation = new ENCAPSULATED_TEXT(string.Format("<{0}>", section), speechAndTags, a);
+                while (!encapsulation.isDone)
+                {
+                    bool stepped = encapsulation.Step();
+
+                    _currentText = curText + encapsulation.displayText;
+
+                    if(stepped)
+                    {
+                        runsThisFrame++;
+                        int maxRunsPerFrame = skip ? 5 : charactersPerFrame;
+                        if(runsThisFrame == maxRunsPerFrame)
+                        {
+                            runsThisFrame = 0;
+                            yield return new WaitForSeconds(skip ? 0.01f : 0.01f * speed);
+                        }
+                    }
+                }
+                a = encapsulation.speechAndTagsProgress + 1;
             }
             //not a tag or not using encap. build like regular text.
             else
@@ -79,13 +107,16 @@ public class TextArchitect
 
     private class ENCAPSULATED_TEXT
     {
-        private string tag, endingTag;
-        private string currentText, targetText;
+        private string tag = "";
+        private string endingTag = "";
+        private string currentText = "";
+        private string targetText = "";
 
         public string displayText {get{return _displayText;}}
         private string _displayText = "";
 
         private string[] allSpeechAndTagsArray;
+        public int speechAndTagsProgress {get{return arrayProgress;}}
         private int arrayProgress = 0;
 
         public bool isDone {get{return _isDone;}}
@@ -112,7 +143,7 @@ public class TextArchitect
 
                 }
 
-                arrayProgress++;
+                this.arrayProgress++;
             }
         }   
         
@@ -158,13 +189,25 @@ public class TextArchitect
                                 if(encapsulator != null)
                                 {
                                     string taggedText = tag + currentText + endingTag;
+                                    encapsulator.currentText += taggedText;
+                                    encapsulator.targetText += taggedText;
+
+                                    UpdateArrayProgress(2);
                                 }
 
+                            }
+                            else
+                            {
+                            subEncapsulator = new ENCAPSULATED_TEXT(string.Format("<{0}>", nextPart), allSpeechAndTagsArray, arrayProgress + 1);
+                            subEncapsulator.encapsulator = this;
+
+                            UpdateArrayProgress();
                             }
                         }
                         else
                         {
-
+                            targetText += nextPart;
+                            UpdateArrayProgress();
                         }
                     }
                     else
@@ -182,6 +225,13 @@ public class TextArchitect
             }
 
             return false;
+        }
+
+        void UpdateArrayProgress(int val = 1)
+        {
+            arrayProgress += val;
+            if(encapsulator != null)
+                encapsulator.UpdateArrayProgress(val);
         }
 
         void UpdateDisplay(string subValue)

@@ -13,11 +13,6 @@ public class DialogueSystem : MonoBehaviour
     {
         instance=this;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void Say(string speech, string speaker = "")
     {
@@ -32,7 +27,7 @@ public class DialogueSystem : MonoBehaviour
     public void SayAdd(string speech, string speaker = "")
     {
         StopSpeaking();
-        SpeechText.text = targetSpeech;
+        speechText.text = targetSpeech;
         speaking = StartCoroutine(Speaking(speech, true, speaker));
     }
 
@@ -43,6 +38,10 @@ public class DialogueSystem : MonoBehaviour
             StopCoroutine(speaking);
             
         }
+        if(textArchitect != null && textArchitect.isConstructing)
+        {
+            textArchitect.Stop();
+        }
         speaking = null;
     }
     
@@ -52,23 +51,29 @@ public class DialogueSystem : MonoBehaviour
 
     string targetSpeech = "";
     Coroutine speaking = null;
+    TextArchitect textArchitect = null;
     IEnumerator Speaking(string speech, bool additive, string speaker = "")
     {
         SpeechLayer.SetActive(true);
-        targetSpeech = speech;
+        string additiveSpeech = additive ? speechText.text : "";
+        targetSpeech = additiveSpeech + speech;
 
-        if(!additive)
-            SpeechText.text = "";
-        else
-            targetSpeech = SpeechText.text + targetSpeech;
+        textArchitect = new TextArchitect(speech, additiveSpeech);
+
+
         CharacterText.text = DetermineSpeaker(speaker); //temporary
         isWaitingForUserInput = false;
 
-        while(SpeechText.text != targetSpeech)
+        while(architect.isConstructing)
         {
-            SpeechText.text += targetSpeech[targetSpeech.Length];
+            if (Input.GetKey(KeyCode.Space))
+                textArchitect.skip = true;
+
+            speechText.text = textArchitect.currentText;
+
             yield return new WaitForEndOfFrame();
         }
+        speechText.text = textArchitect.currentText;
 
         //Text Finished
         isWaitingForUserInput = true;
@@ -99,6 +104,6 @@ public class DialogueSystem : MonoBehaviour
     }
     public GameObject SpeechLayer {get{return elements.SpeechLayer;}}
     public Text CharacterText {get{return elements.CharacterText;}}
-    public Text SpeechText {get{return elements.SpeechText;}}
+    public Text speechText {get{return elements.SpeechText;}}
 
 }
