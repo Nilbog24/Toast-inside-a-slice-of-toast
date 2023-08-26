@@ -22,13 +22,16 @@ public class TextArchitect
 
     public bool isConstructing {get{return buildProcess != null;}}
     Coroutine buildProcess= null;
-    public TextArchitect(string targetText, string preText = "", int charactersPerFrame = 1, float speed = 1f, bool useEncapsulation = true)
+
+    private bool isTMPro = false;
+    public TextArchitect(string targetText, string preText = "", int charactersPerFrame = 1, float speed = 1f, bool useEncapsulation = true, bool isTMPro = true)
     {
         this.targetText = targetText;
         this.preText = preText;
         this.charactersPerFrame = charactersPerFrame;
         this.speed = speed;
         this.useEncapsulation = useEncapsulation;
+        this.isTMPro = isTMPro;
 
         buildProcess = DialogueSystem.instance.StartCoroutine(Construction());
     }
@@ -61,27 +64,37 @@ public class TextArchitect
 
             if (isATag && useEncapsulation)
             {
-                //store the current text into something that can be referenced as a restart point as tagged sections of text are added and removed.
-                curText = _currentText;
-                ENCAPSULATED_TEXT encapsulation = new ENCAPSULATED_TEXT(string.Format("<{0}>", section), speechAndTags, a);
-                while (!encapsulation.isDone)
+                if(!isTMPro)
                 {
-                    bool stepped = encapsulation.Step();
-
-                    _currentText = curText + encapsulation.displayText;
-
-                    if(stepped)
+                    //store the current text into something that can be referenced as a restart point as tagged sections of text are added and removed.
+                    curText = _currentText;
+                    ENCAPSULATED_TEXT encapsulation = new ENCAPSULATED_TEXT(string.Format("<{0}>", section), speechAndTags, a);
+                    while (!encapsulation.isDone)
                     {
-                        runsThisFrame++;
-                        int maxRunsPerFrame = skip ? 5 : charactersPerFrame;
-                        if(runsThisFrame == maxRunsPerFrame)
+                        bool stepped = encapsulation.Step();
+
+                        _currentText = curText + encapsulation.displayText;
+
+                        if(stepped)
                         {
-                            runsThisFrame = 0;
-                            yield return new WaitForSeconds(skip ? 0.01f : 0.01f * speed);
+                            runsThisFrame++;
+                            int maxRunsPerFrame = skip ? 5 : charactersPerFrame;
+                            if(runsThisFrame == maxRunsPerFrame)
+                            {
+                                runsThisFrame = 0;
+                                yield return new WaitForSeconds(skip ? 0.01f : 0.01f * speed);
+                            }
                         }
                     }
+                    a = encapsulation.speechAndTagsProgress + 1;
                 }
-                a = encapsulation.speechAndTagsProgress + 1;
+                else
+                {
+                    string tag = string.Format("<{0}>", section);
+                    _currentText += tag;
+                    yield return new WaitForEndOfFrame();
+                }
+                
             }
             //not a tag or not using encap. build like regular text.
             else
