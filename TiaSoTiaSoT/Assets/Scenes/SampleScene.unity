@@ -1173,6 +1173,7 @@ GameObject:
   - component: {fileID: 1705822556}
   - component: {fileID: 1705822555}
   - component: {fileID: 1705822554}
+  - component: {fileID: 1705822557}
   m_Layer: 5
   m_Name: SpeechText
   m_TagString: Untagged
@@ -1236,7 +1237,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 45
+    m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1247,11 +1248,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.1
-  m_Text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed venenatis
-    neque nec augue iaculis facilisis. Nunc lobortis orci in augue suscipit, id lacinia
-    tortor congue.  Curabitur tempor ligula id laoreet facilisis. Cras enim quam,
-    dignissim id interdum quis, sollicitudin vitae ligula. In iaculis erat lobortis
-    arcu suscipit fringilla.
+  m_Text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed venenatis
+    neque nec augue iaculis facilisis. '
 --- !u!222 &1705822556
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1260,6 +1258,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705822552}
   m_CullTransparentMesh: 1
+--- !u!114 &1705822557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705822552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be749e559143e4449b02802f14fe0cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  continualUpdate: 1
+  fontSizeAtDefaultResolution: 48
 --- !u!1 &1766105857
 GameObject:
   m_ObjectHideFlags: 0

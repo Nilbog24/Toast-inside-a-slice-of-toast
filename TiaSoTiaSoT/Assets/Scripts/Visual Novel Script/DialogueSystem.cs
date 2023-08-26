@@ -64,7 +64,7 @@ public class DialogueSystem : MonoBehaviour
         CharacterText.text = DetermineSpeaker(speaker); //temporary
         isWaitingForUserInput = false;
 
-        while(architect.isConstructing)
+        while(textArchitect.isConstructing)
         {
             if (Input.GetKey(KeyCode.Space))
                 textArchitect.skip = true;
