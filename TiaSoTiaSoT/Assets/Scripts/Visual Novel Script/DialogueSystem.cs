@@ -56,6 +56,7 @@ public class DialogueSystem : MonoBehaviour
 
 
         CharacterText.text = DetermineSpeaker(speaker); //temporary
+        SpeechCharacter.SetActive(CharacterText.text != "");
         isWaitingForUserInput = false;
 
         while(textArchitect.isConstructing)
@@ -93,11 +94,13 @@ public class DialogueSystem : MonoBehaviour
         /// The main panel containg all dialogue related elements in the UI.
         /// </summary>
         public GameObject SpeechLayer;
+        public GameObject SpeechCharacter;
         public TextMeshProUGUI CharacterText;
         public TextMeshProUGUI SpeechText;
     }
     public GameObject SpeechLayer {get{return elements.SpeechLayer;}}
     public TextMeshProUGUI CharacterText {get{return elements.CharacterText;}}
     public TextMeshProUGUI speechText {get{return elements.SpeechText;}}
+    public GameObject SpeechCharacter{get{return elements.SpeechCharacter;}}
 
 }

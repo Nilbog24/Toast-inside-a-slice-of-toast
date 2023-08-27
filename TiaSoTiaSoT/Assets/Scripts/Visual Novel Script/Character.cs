@@ -12,7 +12,7 @@ public class Character
     /// The root is the container for all of the images related ot the character in the scene.
     /// </summary>
  
-    [HideInInspector] public RectTransform root;
+    [HideInInspector]public RectTransform root;
     
     public bool enabled {get{ return root.gameObject.activeInHierarchy;} set{ root.gameObject.SetActive (value);}}
 
@@ -157,8 +157,7 @@ public class Character
 
     public void TransitionBody(Sprite sprite, float speed, bool smooth)
     {
-        if(renderers.bodyRenderer.sprite == sprite)
-            return;
+
         StopTransitioningBody();
         transitioningBody = CharacterManager.instance.StartCoroutine(TransitioningBody(sprite, speed, smooth));
     }
@@ -191,7 +190,7 @@ public class Character
             image.sprite = sprite;
         }
             
-        while(GlobalF.TransitionImages(ref renderers.bodyRenderer, ref renderers.allBodyRenderers, speed, smooth));
+        while(GlobalF.TransitionImages(ref renderers.bodyRenderer, ref renderers.allBodyRenderers, speed, smooth, true));
             yield return new WaitForEndOfFrame();
 
         StopTransitioningBody ();
@@ -203,8 +202,6 @@ public class Character
 
 	public void TransitionExpression(Sprite sprite, float speed, bool smooth)
 	{
-		if (renderers.expressionRenderer.sprite == sprite)
-			return;
 
 		StopTransitioningExpression ();
 		transitioningExpression = CharacterManager.instance.StartCoroutine (TransitioningExpression (sprite, speed, smooth));
@@ -238,15 +235,49 @@ public class Character
 			image.sprite = sprite;
 		}
 
-		while (GlobalF.TransitionImages (ref renderers.expressionRenderer, ref renderers.allExpressionRenderers, speed, smooth))
+		while (GlobalF.TransitionImages (ref renderers.expressionRenderer, ref renderers.allExpressionRenderers, speed, smooth, true))
 			yield return new WaitForEndOfFrame ();
 
-		Debug.Log ("done");
 		StopTransitioningExpression ();
 	}
 
 
     //End Trasitioning Characters\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    public void Flip()
+    {
+        root.localScale = new Vector3(root.localScale.x * -1, 1, 1);
+    }
+    public void FaceLeft()
+    {
+        root.localScale = Vector3.one;
+    }
+
+    public void FaceRight()
+    {
+        root.localScale = new Vector3(-1,1,1);
+    }
+
+    public void FadeOut (float speed = 3, bool smooth = false)
+    {
+        Sprite alphaSprite = Resources.Load<Sprite>("Characters/AlphaOnly");
+
+        lastBodySprite = renderers.bodyRenderer.sprite;
+        lastFacialSprite = renderers.expressionRenderer.sprite;
+
+        TransitionBody(alphaSprite, speed, smooth);
+        TransitionExpression(alphaSprite, speed, smooth);
+    }
+
+    Sprite lastBodySprite, lastFacialSprite = null;
+    public void FadeIn(float speed = 3, bool smooth = false)
+    {
+        if(lastBodySprite != null && lastFacialSprite != null)
+        {
+            TransitionBody(lastBodySprite, speed, smooth);
+            TransitionExpression(lastFacialSprite, speed, smooth);
+        }
+    }
 
     /// <summary>
     /// Create a new character.

@@ -41,7 +41,7 @@ public class NovelController : MonoBehaviour
         }
         else
         {
-            HandleDialogue(dialogueAndActions[0]);
+            HandleEventsFromLine(dialogueAndActions[0]);
         }
     }
     string cachedLastSpeaker = "";
@@ -87,46 +87,47 @@ public class NovelController : MonoBehaviour
     {
         string[] data = action.Split('(',')');
 
-        if(data[0] == "setBackground")
+        switch(data[0])
         {
-            Command_SetLayerImage(data[1], BCFC.instance.background);
-            return;
+            case("setBackground"):
+                Command_SetLayerImage(data[1], BCFC.instance.background);
+                break;
+            case("setCinematic"):
+                Command_SetLayerImage(data[1], BCFC.instance.cinematic);
+                break;
+            case("setForground"):
+                Command_SetLayerImage(data[1], BCFC.instance.foreground);
+                break;
+            case("playSound"):
+                Command_PlaySound(data[1]);
+                break;
+            case("playMusic"):
+                Command_PlayMusic(data[1]);
+                break;
+            case("move"):
+                Command_MoveCharacter(data[1]);
+                break;
+            case("setPosition"):
+                Command_SetPosition(data[1]);
+                break;
+            case("setFace"):
+                Command_SetFace(data[1]);
+                break;
+            case("setBody"):
+                Command_SetBody(data[1]);
+                break;
+            case("flip"):
+                Command_Flip(data[1]);
+                break;
+            case("faceLeft"):
+                Command_FaceLeft(data[1]);
+                break;
+            case("faceRight"):
+                Command_FaceRight(data[1]);
+                break;
         }
-        if(data[0] == "setCinematic")
-        {
-            Command_SetLayerImage(data[1], BCFC.instance.cinematic);
-            return;
-        }
-        if(data[0] == "setForground")
-        {
-            Command_SetLayerImage(data[1], BCFC.instance.foreground);
-            return;
-        }
-        if(data[0] == "playSound")
-        {
-            Command_PlaySound(data[1]);
-            return;
-        }
-        if(data[0] == "playMusic")
-        {
-            Command_PlayMusic(data[1]);
-            return;
-        }
-        if(data[0] == "move")
-        {
-            Command_MoveCharacter(data[1]);
-            return;
-        }
-        if(data[0] == "setPosition")
-        {
-            Command_SetPosition(data[1]);
-            return;
-        }
-        if(data[0] == "changeExpression")
-        {
-            Command_ChangeExpression(data[1]);
-            return;
-        }
+
+        
     }
 
     void Command_SetLayerImage(string data, BCFC.LAYER layer)
@@ -181,7 +182,7 @@ public class NovelController : MonoBehaviour
         string[] paramaters = data.Split(',');
         string character = paramaters[0];
         float locationX = float.Parse(paramaters[1]);
-        float locationY = float.Parse(paramaters[2]);
+        float locationY = paramaters.Length >= 3 ? float.Parse(paramaters[2]): 0;
         float speed = paramaters.Length >= 4 ? float.Parse(paramaters[3]) : 1f;
         bool smooth = paramaters.Length == 5 ? bool.Parse(paramaters[4]) : true;
 
@@ -216,5 +217,129 @@ public class NovelController : MonoBehaviour
         if (region.ToLower() == "face")
             c.TransitionExpression(sprite, speed, false);
 
+    }
+
+    void Command_SetFace(string data)
+    {
+        string[] paramaters = data.Split(',');
+        string character = paramaters[0];
+        string expression = paramaters[1];
+        float speed = paramaters.Length == 3 ? float.Parse(paramaters[2]) : 1f;
+
+        Character c = CharacterManager.instance.GetCharacter(character);
+        Sprite sprite = c.GetSprite(expression);
+
+        c.TransitionExpression(sprite, speed, false);
+
+    }
+
+    void Command_SetBody(string data)
+    {
+        string[] paramaters = data.Split(',');
+        string character = paramaters[0];
+        string expression = paramaters[1];
+        float speed = paramaters.Length == 3 ? float.Parse(paramaters[2]) : 1f;
+
+        Character c = CharacterManager.instance.GetCharacter(character);
+        Sprite sprite = c.GetSprite(expression);
+
+        c.TransitionBody(sprite, speed, false);
+
+    }
+
+
+    void Command_Flip(string data)
+    {
+        string[] characters = data.Split(',');
+        foreach(string s in characters)
+        {
+            Character c = CharacterManager.instance.GetCharacter(s);
+            c.Flip();
+        }
+        
+    }
+
+    void Command_FaceLeft(string data)
+    {
+        string[] characters = data.Split(',');
+        foreach(string s in characters)
+        {
+            Character c = CharacterManager.instance.GetCharacter(s);
+            c.FaceLeft();
+        }
+        
+    }
+
+    void Command_FaceRight(string data)
+    {
+        string[] characters = data.Split(',');
+        foreach(string s in characters)
+        {
+            Character c = CharacterManager.instance.GetCharacter(s);
+            c.FaceRight();
+        }
+        
+    }
+
+    void Command_Exit(string data)
+    {
+        string[] paramaters = data.Split(',');
+        string[] characters = paramaters[0].Split(';');
+        float speed = 3;
+        bool smooth = false;
+        for(int i = 1; i < paramaters.Length; i++)
+        {
+            float fVal = 0; bool bVal = false;
+            if(float.TryParse(paramaters[i], out fVal))
+            {
+                speed = fVal; continue;
+            }
+            if(bool.TryParse(paramaters[i], out bVal))
+            {
+                smooth = bVal; continue;
+            }
+        }
+
+        foreach(string s in characters)
+        {
+            Character c = CharacterManager.instance.GetCharacter(s);
+            c.FadeOut(speed, smooth);
+        }
+    }
+
+    void Command_Enter(string data)
+    {
+        string[] paramaters = data.Split(',');
+        string[] characters = paramaters[0].Split(';');
+        float speed = 3;
+        bool smooth = false;
+        for(int i = 1; i < paramaters.Length; i++)
+        {
+            float fVal = 0; bool bVal = false;
+            if(float.TryParse(paramaters[i], out fVal))
+            {
+                speed = fVal; continue;
+            }
+            if(bool.TryParse(paramaters[i], out bVal))
+            {
+                smooth = bVal; continue;
+            }
+        }
+
+        foreach(string s in characters)
+        {
+            Character c = CharacterManager.instance.GetCharacter(s, true, false);
+            if(!c.enabled)
+            {
+                c.renderers.bodyRenderer.color = new Color(1,1,1,0);
+                c.renderers.expressionRenderer.color = new Color(1,1,1,0);
+                c.enabled = true;
+
+                c.TransitionBody(c.renderers.bodyRenderer.sprite,speed,smooth);
+                c.TransitionExpression(c.renderers.expressionRenderer.sprite,speed,smooth);
+            }
+            else
+                c.FadeIn(speed, smooth);
+        }
     }
 }
