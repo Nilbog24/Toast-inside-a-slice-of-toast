@@ -38,8 +38,7 @@ public class NovelController : MonoBehaviour
             StopCoroutine(handlingChapterFile);
         handlingChapterFile = StartCoroutine(HandlingChapterFile());
 
-
-        _next();
+        Next();
     }
 
     bool _next = false;
