@@ -4,22 +4,22 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -6254728745778485249
-    second: PC Computer - Sakura Spirit - Boy_0
+    second: boyBody
   - first:
       213: -6737008799156488748
-    second: PC Computer - Sakura Spirit - Boy_1
+    second: blank1
   - first:
       213: 7256811794501940259
-    second: PC Computer - Sakura Spirit - Boy_2
+    second: boyNormal
   - first:
       213: 9081784705925112520
-    second: PC Computer - Sakura Spirit - Boy_3
+    second: boyWeird
   - first:
       213: -792655134638440182
-    second: PC Computer - Sakura Spirit - Boy_4
+    second: boyHappy
   - first:
       213: -3466299402654890
-    second: PC Computer - Sakura Spirit - Boy_5
+    second: blank2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -121,7 +121,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_0
+      name: boyBody
       rect:
         serializedVersion: 2
         x: 4
@@ -129,7 +129,7 @@ TextureImporter:
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -142,7 +142,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_1
+      name: blank1
       rect:
         serializedVersion: 2
         x: 674
@@ -150,7 +150,7 @@ TextureImporter:
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -163,7 +163,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_2
+      name: boyNormal
       rect:
         serializedVersion: 2
         x: 4
@@ -171,7 +171,7 @@ TextureImporter:
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -184,15 +184,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_3
+      name: boyWeird
       rect:
         serializedVersion: 2
         x: 674
-        y: 756
+        y: 753
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -205,7 +205,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_4
+      name: boyHappy
       rect:
         serializedVersion: 2
         x: 4
@@ -213,7 +213,7 @@ TextureImporter:
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -226,7 +226,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PC Computer - Sakura Spirit - Boy_5
+      name: blank2
       rect:
         serializedVersion: 2
         x: 674
@@ -234,7 +234,7 @@ TextureImporter:
         width: 665
         height: 748
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
