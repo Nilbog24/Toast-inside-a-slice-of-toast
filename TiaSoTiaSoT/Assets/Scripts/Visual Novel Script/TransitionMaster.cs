@@ -134,13 +134,12 @@ public class TransitionMaster : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        foreach(RawImage r in layer.allImages)
+        foreach(RawImage r in currentImagesOnLayer)
         {
-            if(r.material != null)
+            layer.allImages.Remove(r);
+            if(r != null)
                 Destroy(r.gameObject, 0.01f);
         }
-        layer.allImages.Clear();
-
         layer.specialTransitionCoroutine = null;
 
     }
