@@ -1,0 +1,16 @@
+enter(Boy) faceRight(Boy) setFace(Boy, boyNormal) setBody(Boy, boyBody), setPosition(Boy, 0.2) setBackground(Bg_14b) next()
+Boy "I'm kinda bored"
+
+narrator "Indeed you are. {wa 3} Maybe you should go make some <b>Bread</b>?"
+
+Boy "Guess I'll make some bread"
+
+choice "How do you make bread?"
+{
+    "Just put something in the toaster"
+	Load(toasterEnd)
+    "Go buy some fresh bread"
+	Load(freshBread)
+    "Buy some ingredients to make bread"
+	Load(buyIngredients)
+}

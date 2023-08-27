@@ -239,6 +239,12 @@ public class NovelController : MonoBehaviour
             case("move"):
                 Command_MoveCharacter(data[1]);
                 break;
+            case("enter"):
+                Command_Enter(data[1]);
+                break;
+            case("exit"):
+                Command_Exit(data[1]);
+                break;
             case("setPosition"):
                 Command_SetPosition(data[1]);
                 break;

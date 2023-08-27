@@ -84,7 +84,7 @@ public class DialogueSystem : MonoBehaviour
     {
         string retVal = CharacterText.text; //Default return is the current name
         if(s != CharacterText.text && s != "")
-            retVal = (s.ToLower().Contains("narrator")) ? "" : s;
+            retVal = s.ToLower().Contains("narrator") ? "" : s;
 
         return retVal;
     }
