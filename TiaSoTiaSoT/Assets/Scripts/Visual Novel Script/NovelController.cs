@@ -134,6 +134,9 @@ public class NovelController : MonoBehaviour
             case("transForeground"):
                 Command_TransLayer(BCFC.instance.foreground, data[1]);
                 break;
+            case("showScene"):
+                Command_ShowScene(data[1]);
+                break;
         }
 
         
@@ -380,5 +383,33 @@ public class NovelController : MonoBehaviour
         }
 
         TransitionMaster.TransitionLayer(layer, tex, transTex, spd, smooth);
+    }
+
+    void Command_ShowScene(string data)
+    {
+        string[] paramaters = data.Split(',');
+        bool show = bool.Parse(paramaters[0]);
+        string texName = paramaters[1];
+        Texture2D transTex = Resources.Load("Backgrounds" + texName) as Texture2D;
+
+        float spd = 2f;
+        bool smooth = false;
+
+        for(int i = 2; i < paramaters.Length; i++)
+        {
+            string p = paramaters[i];
+            float fVal = 0;
+            bool bVal = false;
+            if(float.TryParse(p, out fVal))
+            {
+                spd = fVal; continue;
+            }
+            if(bool.TryParse(p, out bVal))
+            {
+                smooth = bVal; continue;
+            }
+        }
+
+        TransitionMaster.ShowScene(show, spd, smooth, transTex);
     }
 }

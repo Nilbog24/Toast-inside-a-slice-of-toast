@@ -52,7 +52,7 @@ public class DialogueSystem : MonoBehaviour
         string additiveSpeech = additive ? speechText.text : "";
         targetSpeech = additiveSpeech + speech;
 
-        textArchitect = new TextArchitect(speech, additiveSpeech);
+        textArchitect = new TextArchitect(speechText, speech, additiveSpeech);
 
 
         CharacterText.text = DetermineSpeaker(speaker); //temporary
@@ -64,11 +64,9 @@ public class DialogueSystem : MonoBehaviour
             if (Input.GetKey(KeyCode.Space))
                 textArchitect.skip = true;
 
-            speechText.text = textArchitect.currentText;
-
             yield return new WaitForEndOfFrame();
         }
-        speechText.text = textArchitect.currentText;
+
 
         //Text Finished
         isWaitingForUserInput = true;
