@@ -43,16 +43,20 @@ public class DialogueSystem : MonoBehaviour
     public bool isSpeaking {get{return speaking != null;}}
     [HideInInspector] public bool isWaitingForUserInput = false;
 
-    string targetSpeech = "";
+    public string targetSpeech = "";
     Coroutine speaking = null;
     TextArchitect textArchitect = null;
+    public TextArchitect currentArchitect {get{return textArchitect;}}
     IEnumerator Speaking(string speech, bool additive, string speaker = "")
     {
         SpeechLayer.SetActive(true);
         string additiveSpeech = additive ? speechText.text : "";
         targetSpeech = additiveSpeech + speech;
 
-        textArchitect = new TextArchitect(speechText, speech, additiveSpeech);
+        if(textArchitect == null)
+            textArchitect = new TextArchitect(speechText, speech, additiveSpeech);
+        else
+            textArchitect.Renew(speech, additiveSpeech);
 
 
         CharacterText.text = DetermineSpeaker(speaker); //temporary

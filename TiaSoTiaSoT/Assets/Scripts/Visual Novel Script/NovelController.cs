@@ -127,6 +127,7 @@ public class NovelController : MonoBehaviour
                     {
                         segment.ForceFinish();
                     }
+                    _next = false;
                 }
             }
 
@@ -135,15 +136,20 @@ public class NovelController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        for(int i = 0; i < line.actions.Count; i++)
+        {
+            HandleAction(line.actions[i]);
+        }
+
         handlingLine = null;
     }
 
 
-    
+
     [HideInInspector]
     public string cachedLastSpeaker = "";
    
-    void HandleAction(string action)
+    public void HandleAction(string action)
     {
         string[] data = action.Split('(',')');
 

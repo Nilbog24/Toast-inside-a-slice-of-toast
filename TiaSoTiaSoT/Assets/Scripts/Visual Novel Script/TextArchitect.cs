@@ -11,8 +11,8 @@ public class TextArchitect
 	private string preText;
 	private string targetText;
 
-	private int charactersPerFrame = 1;
-	private float speed = 1f;
+	public int charactersPerFrame = 1;
+	public float speed = 1f;
 
 	public bool skip = false;
 
@@ -59,6 +59,8 @@ public class TextArchitect
 		int max = inf.characterCount;
 
 		tmpro.maxVisibleCharacters = vis;
+		
+		int cpf = charactersPerFrame;
 
 		while(vis < max)
 		{
@@ -66,11 +68,11 @@ public class TextArchitect
 			if (skip)
 			{
 				speed = 1;
-				charactersPerFrame = charactersPerFrame < 5 ? 5 : charactersPerFrame + 3;
+				cpf = charactersPerFrame < 5 ? 5 : charactersPerFrame + 3;
 			}
 
 			//reveal a certain number of characters per frame.
-			while(runsThisFrame < charactersPerFrame)
+			while(runsThisFrame < cpf)
 			{
 				vis++;
 				tmpro.maxVisibleCharacters = vis;
@@ -113,4 +115,30 @@ public class TextArchitect
         tmpro.maxVisibleCharacters = tmpro.text.Length;
         Terminate();
     }
+
+	public void Renew(string targ, string pre)
+	{
+		targetText = targ;
+		preText = pre;
+
+		skip = false;
+		if(isConstructing)
+			DialogueSystem.instance.StopCoroutine(buildProcess);	
+
+		buildProcess = DialogueSystem.instance.StartCoroutine(Construction());
+	}
+
+	public void ShowText(string text)
+	{
+		if(isConstructing)
+			DialogueSystem.instance.StopCoroutine(buildProcess);
+
+		targetText = text;
+		tmpro.text = text;
+
+		tmpro.maxVisibleCharacters = tmpro.text.Length;
+
+		if(tmpro == DialogueSystem.instance.speechText)
+			DialogueSystem.instance.targetSpeech = text;
+	}
 }
