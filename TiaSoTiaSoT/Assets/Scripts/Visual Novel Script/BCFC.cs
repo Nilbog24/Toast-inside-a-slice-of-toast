@@ -26,6 +26,8 @@ public class BCFC : MonoBehaviour
         public RawImage activeImage;
         public List<RawImage> allImages = new List<RawImage>();
 
+        public Coroutine specialTransitionCoroutine = null;
+
         public void SetTexture(Texture texture, bool ifMovieThenLoop = true)
         {
             if(activeImage !=null && activeImage.texture != null)
