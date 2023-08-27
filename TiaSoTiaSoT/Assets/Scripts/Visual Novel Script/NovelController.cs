@@ -5,8 +5,14 @@ using UnityEngine;
 public class NovelController : MonoBehaviour
 {
 
+    public static NovelController instance;
     List<string> data = new List<string>();
     int progress = 0;
+
+    void Awake()
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -19,8 +25,7 @@ public class NovelController : MonoBehaviour
         //testing
         if(Input.GetKeyDown(KeyCode.RightArrow))
         {
-            HandleLine(data[progress]);
-            progress++;
+            Next();
         }
     }
     void LoadChapterFile(string fileName)
@@ -28,61 +33,116 @@ public class NovelController : MonoBehaviour
         data = FileManager.LoadFile(FileManager.savPath + "Resources/Story/" + fileName);
         progress = 0;
         cachedLastSpeaker = "";
+
+        if(handlingChapterFile != null)
+            StopCoroutine(handlingChapterFile);
+        handlingChapterFile = StartCoroutine(HandlingChapterFile());
     }
 
-    void HandleLine(string line)
+    bool _next = false;
+    public void Next()
     {
-        string[] dialogueAndActions = line.Split('"');
-
-        if(dialogueAndActions.Length == 3)
-        {
-            HandleDialogue(dialogueAndActions[0], dialogueAndActions[1]);
-            HandleEventsFromLine(dialogueAndActions[2]);
-        }
-        else
-        {
-            HandleEventsFromLine(dialogueAndActions[0]);
-        }
+        _next = true;
     }
-    string cachedLastSpeaker = "";
-    void HandleDialogue(string dialogueDetails, string dialogue)
+
+    Coroutine handlingChapterFile = null;
+    IEnumerator HandlingChapterFile()
     {
-        string speaker = cachedLastSpeaker;
-        bool additive = dialogueDetails.Contains("+");
+        int progress = 0;
 
-        if(additive)
-            dialogueDetails = dialogueDetails.Remove(dialogueDetails.Length-1);
-
-        if(dialogueDetails.Length > 0)
+        while(progress < data.Count)
         {
-            if(dialogueDetails[dialogueDetails.Length-1] == ' ')
-                dialogueDetails = dialogueDetails.Remove(dialogueDetails.Length-1);
-
-            speaker = dialogueDetails;
-            cachedLastSpeaker = speaker;
-        }
-
-        if(speaker != "narrator")
-        {
-            Character character = CharacterManager.instance.GetCharacter(speaker);
-            character.Say(dialogue, additive);
-        }
-        else
-        {
-            DialogueSystem.instance.Say(dialogue, speaker, additive);
+            if(_next)
+            {
+                HandleLine(data[progress]);
+                progress++;
+                while(isHandlingLine)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+            }
+            yield return new WaitForEndOfFrame();
         }
     }
 
-    void HandleEventsFromLine(string events)
+    void HandleLine(string rawLine)
     {
-        string[] actions = events.Split(' ');
-
-        foreach(string action in actions)
-        {
-            HandleAction(action);
-        }
+        CLM.LINE line = CLM.Interpret(rawLine);
+        StopHandlingLine();
+        handlingLine = StartCoroutine(HandlingLine(line));
     }
 
+    void StopHandlingLine()
+    {
+        if(isHandlingLine)
+        {
+            StopCoroutine(handlingLine);
+        }
+        handlingLine = null;
+    } 
+
+    public bool isHandlingLine{get{return handlingLine != null;}}
+    Coroutine handlingLine = null;
+    IEnumerator HandlingLine(CLM.LINE line)
+    {
+        _next = false;
+        int lineProgress = 0;
+
+        while(lineProgress < line.segments.Count)
+        {
+            _next = false;
+            CLM.LINE.SEGMENT segment = line.segments[lineProgress];
+
+            if(lineProgress > 0)
+            {
+                if(segment.trigger == CLM.LINE.SEGMENT.TRIGGER.autoDelay)
+                {
+                    for(float timer = segment.autoDelay; timer >= 0; timer -= Time.deltaTime)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+                else
+                {
+                    while(!_next)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+            }
+            _next = false;
+
+            segment.Run();
+
+            while(segment.isRunning)
+            {
+                yield return new WaitForEndOfFrame();
+                if(_next)
+                {
+                    if(!segment.architect.skip)
+                    {
+                        segment.architect.skip = true;
+                    }
+                    else
+                    {
+                        segment.ForceFinish();
+                    }
+                }
+            }
+
+            lineProgress++;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        handlingLine = null;
+    }
+
+
+    
+    [HideInInspector]
+    public string cachedLastSpeaker = "";
+   
     void HandleAction(string action)
     {
         string[] data = action.Split('(',')');
