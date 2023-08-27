@@ -37,6 +37,9 @@ public class NovelController : MonoBehaviour
         if(handlingChapterFile != null)
             StopCoroutine(handlingChapterFile);
         handlingChapterFile = StartCoroutine(HandlingChapterFile());
+
+
+        _next();
     }
 
     bool _next = false;
@@ -48,25 +51,85 @@ public class NovelController : MonoBehaviour
 
     public bool isHandlingChapterFile{get{return handlingChapterFile != null;}}
     Coroutine handlingChapterFile = null;
+    [HideInInspector]public int chapterProgress = 0;
     IEnumerator HandlingChapterFile()
     {
-        int progress = 0;
+        chapterProgress = 0;
 
-        while(progress < data.Count)
+        while(chapterProgress < data.Count)
         {
             if(_next)
-            {
-                HandleLine(data[progress]);
-                progress++;
-                while(isHandlingLine)
+            {   
+                string line = data[chapterProgress];
+
+                if(line.StartsWith("choice"))
                 {
-                    yield return new WaitForEndOfFrame();
+                    yield return HandlingChoiceLine(line);
+                    chapterProgress++;
+
                 }
+                else
+                {
+                    HandleLine(line);
+                    progress++;
+                    while(isHandlingLine)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+                
             }
             yield return new WaitForEndOfFrame();
         }
 
         handlingChapterFile = null;
+    }
+
+    IEnumerator HandlingChoiceLine(string line)
+    {
+        string title = line.Split('"')[1];
+        List<string> choices = new List<string>();
+        List<string> actions = new List<string>();
+
+        bool gatheringChoices = true;
+        while(gatheringChoices)
+        {
+            chapterProgress++;
+            line = data[chapterProgress];
+
+            if(line == "{")
+                continue;
+
+            line = line.Replace("   ", "");
+
+            if(line != "}")
+            {
+                choices.Add(line.Split('"')[1]);
+                actions.Add(data[chapterProgress+1].Replace("   ",""));
+                chapterProgress++;
+            }
+            else
+            {
+                gatheringChoices = false;
+            }
+        }
+        if(choices.Count > 0)
+        {
+            ChoiceScreen.Show(title, choices.ToArray()); yield return new WaitForEndOfFrame();
+            while(ChoiceScreen.isWaitingForChoiceToBeMade)
+                yield return new WaitForEndOfFrame();
+
+            string action = actions[ChoiceScreen.lastChoiceMade.index];
+            HandleLine(action);
+
+            while(isHandlingLine)
+                yield return new WaitForEndOfFrame();
+        }
+        else
+        {
+            Debug.LogError("Invalid Choice operation, no choices were found");
+        }
+
     }
 
     void HandleLine(string rawLine)
@@ -207,9 +270,17 @@ public class NovelController : MonoBehaviour
             case("showScene"):
                 Command_ShowScene(data[1]);
                 break;
+            case("Load"):
+                Command_Load(data[1]);
+                break;
         }
 
         
+    }
+
+    void Command_Load(string chapterName)
+    {
+        NovelController.instance.LoadChapterFile(chapterName);
     }
 
     void Command_SetLayerImage(string data, BCFC.LAYER layer)
