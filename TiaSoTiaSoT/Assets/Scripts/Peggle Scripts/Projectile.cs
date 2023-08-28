@@ -14,10 +14,9 @@ public class Projectile : MonoBehaviour
     private Rigidbody2D rb;
     // This is used to determine the amount of force that the projectile spawned will have.
     public float force;
-    // This gets the gamemanager object so that variables and methods from it can be used in this script.
-    private GameManager gameManager;
-
     // Start is called before the first frame update
+
+    private Turret turret;
     void Start()
     {
         //  This will assign the camera component of the main camera to the maincam variable.
@@ -37,7 +36,8 @@ public class Projectile : MonoBehaviour
         // There's the plus one eighty because the arrow projectile prefab is facing the wrong way.
         transform.rotation = Quaternion.Euler(0, 0, rot + 180);
         // This'll get the GameManager script and assign it to the gameManager variable.
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+
+        turret = GameObject.FindGameObjectWithTag("Turret").GetComponent<Turret>();
     }
 
     // Update is called once per frame
@@ -45,34 +45,15 @@ public class Projectile : MonoBehaviour
     // This is so theren't tons of entites existing.
     void Update()
     {
-        if (transform.position.x > 12 || transform.position.y > 5)
+        if (transform.position.x > 16)
         {
             Destroy(gameObject);
+            turret.currentlyShooting = false;
         }
-        if (transform.position.x < -12 || transform.position.y < -5)
+        if (transform.position.x < -16 || transform.position.y < -5)
         {
             Destroy(gameObject);
-        }
-    }
-    
-    // This method is used to determine when the projectile collides with another object.
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        // If the other object is an enemy then both the projectile and the monster wiil be destroyed.
-        // Then the UpdateScore method from the game manager will be called and the score will increase by one.
-        if (other.CompareTag("Enemy"))
-        {
-            Destroy(gameObject);
-            Destroy(other.gameObject);
-        }
-        // If the other object isn't an enemy, a player, or another arrow then it's velocity will become zero.
-        // After a second the projectile will be destroyed.
-        // The reason it can't be the player is that the projectile spawns on the player.
-        // If the not player wasn't there then the projectile would immediatly lose all velocity and die. 
-        else if (!other.CompareTag("Player") && !other.CompareTag("Arrow"))
-        {
-            rb.velocity = Vector3.zero;
-            Destroy(gameObject, 1);
+            turret.currentlyShooting = false;
         }
     }
 }

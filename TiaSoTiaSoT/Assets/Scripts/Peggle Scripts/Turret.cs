@@ -16,8 +16,11 @@ public class Turret : MonoBehaviour
     public Transform projectileTransform;
     // This boolean determines whether or not the player can fire.
     public bool canFire;
+    public bool currentlyShooting = false;
     private GameManager gameManager;
     
+
+    public Animator animator;
 
     // Start is called before the first frame update
     // In this method the mainCam variable will be assigned the camera component
@@ -25,8 +28,6 @@ public class Turret : MonoBehaviour
     void Start()
     {
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-
     }
 
     // Update is called once per frame
@@ -40,14 +41,14 @@ public class Turret : MonoBehaviour
 
         float rotationZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
 
-        transform.rotation = Quaternion.Euler(0, 0, rotationZ);
+        transform.rotation = Quaternion.Euler(0, 0, rotationZ+90);
 
         // This chunk of code in this if loop is the code that create the cooldown between shots.
         // First if canFire is false then the timer variable will increase with the change in time.
         // Then if timer is greater than the cooldown length the canFire will become true and the timer will be reset.
         if(!canFire)
         {
-            if(canFire)// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
+            if(!currentlyShooting)// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
             {
                 canFire = true;
             }
@@ -57,18 +58,13 @@ public class Turret : MonoBehaviour
         // Then the projectile will be created.
         if(Input.GetKeyDown(KeyCode.Mouse0) && canFire)
         {
+            animator.SetTrigger("Shoot");
+            
             canFire = false;
             Instantiate(projectilePrefab, projectileTransform.position, Quaternion.identity);
-        }
+            currentlyShooting = true;
+            
 
-        // If the game is over them canFire will become false
-        // The the cooldown length with become 68.1 years long.
-        // The reason for that last part is because without it the player would sill be able to shoot after the game was over.
-        // Now they still can but they'd have to wait 68.1 years to do so.
-        if(canFire)
-        {
-            canFire = false;
-    
         }
     }
 }
