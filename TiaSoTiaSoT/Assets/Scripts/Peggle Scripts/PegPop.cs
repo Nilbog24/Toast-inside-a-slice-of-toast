@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PegPop : MonoBehaviour
 {
-    public static int points = 0;
     public GameObject[] toasts;
     public List<GameObject> inactiveToasts = new List<GameObject>();
     public int refresh;
@@ -20,8 +19,7 @@ public class PegPop : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        points += 10;
-        Debug.Log("Popped! Total Points: " + points);
+        GameManager.instance.UpdateScore(1);
         gameObject.SetActive(false);
         
         
