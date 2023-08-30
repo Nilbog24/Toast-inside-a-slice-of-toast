@@ -14,12 +14,19 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI shotsRemainingText;
     public int shots;
+    public int buildIndex;
     void Awake()
     {
         instance = this;
         score = 0;
+        shots = 10;
         shotsRemaining = shots;
         UpdateScore(0);
+    }
+    public Scene currentScene;
+    void Start()
+    {
+        Scene currentScene = SceneManager.GetActiveScene ();    
     }
 
     public void UpdateScore(int scoreToAdd)
@@ -34,5 +41,25 @@ public class GameManager : MonoBehaviour
         shotsRemaining--;
         shotsRemainingText.text = "Shots Remaining: " + shotsRemaining;
         Debug.Log("Shot! Shots Remaining: " + shotsRemaining);
+    }
+
+    void Update()
+    {   
+        buildIndex = currentScene.buildIndex;
+        if(shotsRemaining == 0 && !Turret.instance.currentlyShooting)
+        {
+            if(buildIndex == 1)
+            {
+                SceneManager.LoadScene(2);
+                shots = 12;
+                Scene currentScene = SceneManager.GetActiveScene ();
+            }
+            if(buildIndex == 2)
+            {
+                SceneManager.LoadScene(3);
+                shots = 12;
+                Scene currentScene = SceneManager.GetActiveScene ();
+            }
+        }
     }
 }

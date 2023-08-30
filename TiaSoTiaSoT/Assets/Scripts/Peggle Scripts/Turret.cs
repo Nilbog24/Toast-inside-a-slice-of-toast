@@ -19,10 +19,11 @@ public class Turret : MonoBehaviour
     private GameManager gameManager;
     
     public Animator animator;
+    public static Turret instance;
 
     void Awake()
     {
-        
+        instance = this;
     }
 
     // Start is called before the first frame update
@@ -36,30 +37,32 @@ public class Turret : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
-        // This chunk of code in this if loop is the code that create the cooldown between shots.
-        // First if canFire is false then the timer variable will increase with the change in time.
-        // Then if timer is greater than the cooldown length the canFire will become true and the timer will be reset.
-        if(!canFire)
+        if(!Menu.instance.isPause)
         {
-            if(!currentlyShooting)// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
+            // This chunk of code in this if loop is the code that create the cooldown between shots.
+            // First if canFire is false then the timer variable will increase with the change in time.
+            // Then if timer is greater than the cooldown length the canFire will become true and the timer will be reset.
+            if(!canFire)
             {
-                canFire = true;
+                if(!currentlyShooting)// Figure out how to check the tag of the background, if the tag is Peggle or something then can fire = true
+                {
+                    canFire = true;
+                }
+            }
+            
+            // If the player does a left click and canFire is true then canFire will become false.
+            // Then the projectile will be created.
+            if(Input.GetKeyDown(KeyCode.Mouse0) && canFire)
+            {
+                animator.SetTrigger("Shoot");
+                
+                canFire = false;
+                Instantiate(projectilePrefab, projectileTransform.position, Quaternion.identity);
+                currentlyShooting = true;
+                GameManager.instance.UpdateShots();
             }
         }
-        
-        // If the player does a left click and canFire is true then canFire will become false.
-        // Then the projectile will be created.
-        if(Input.GetKeyDown(KeyCode.Mouse0) && canFire)
-        {
-            animator.SetTrigger("Shoot");
-            
-            canFire = false;
-            Instantiate(projectilePrefab, projectileTransform.position, Quaternion.identity);
-            currentlyShooting = true;
-            GameManager.instance.UpdateShots();
 
-        }
+        
     }
 }
