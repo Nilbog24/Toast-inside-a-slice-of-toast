@@ -58,7 +58,7 @@ public class Turret : MonoBehaviour
             canFire = false;
             Instantiate(projectilePrefab, projectileTransform.position, Quaternion.identity);
             currentlyShooting = true;
-            
+            GameManager.instance.UpdateShots();
 
         }
     }

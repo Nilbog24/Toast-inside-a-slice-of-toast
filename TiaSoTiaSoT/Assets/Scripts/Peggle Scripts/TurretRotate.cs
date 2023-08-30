@@ -19,12 +19,16 @@ public class TurretRotate : MonoBehaviour
     {
         // This'll set the mousePos variable to the mouse's position.
         mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+        if(mousePos.y !< 4.7)
+        {
+            // These three lines of code will get the wanted rotation.
+            Vector3 rotation = mousePos - transform.position;
+
+            float rotationZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg + 90;
+
+            transform.rotation = Quaternion.Euler(0, 0, rotationZ);
+        }
         
-        // These three lines of code will get the wanted rotation.
-        Vector3 rotation = mousePos - transform.position;
-
-        float rotationZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
-
-        transform.rotation = Quaternion.Euler(0, 0, rotationZ+90);
+           
     }
 }
