@@ -44,15 +44,7 @@ public class Projectile : MonoBehaviour
     // This method is only used to destroy the projectile once it reaches out of bounds.
     // This is so theren't tons of entites existing.
     void Update()
-    {
-        Vector2 retainedVelocity = rb.velocity;
-        while(Menu.instance.isPause)
-        {
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        }
-        rb.constraints = RigidbodyConstraints2D.None;
-        // rb.velocity = retainedVelocity;
-        
+    {        
         if (transform.position.x > 16)
         {
             Destroy(gameObject);

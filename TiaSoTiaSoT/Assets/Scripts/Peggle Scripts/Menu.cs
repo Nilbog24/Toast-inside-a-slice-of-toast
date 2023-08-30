@@ -40,6 +40,7 @@ public class Menu : MonoBehaviour
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
         isPause = true;
+        Debug.Log("rpauseeing");
     }
 
     public void ResumeGame()
@@ -47,6 +48,7 @@ public class Menu : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPause = false;
+        Debug.Log("REsumeifn");
     }
 
     public void GoToMainMenu()

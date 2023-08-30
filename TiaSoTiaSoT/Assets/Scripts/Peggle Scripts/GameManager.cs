@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour
         instance = this;
         score = 0;
         shots = 10;
-        shotsRemaining = shots;
+        shotsRemaining = shots + 1;
         UpdateScore(0);
+        UpdateShots();
     }
     public Scene currentScene;
     void Start()
@@ -45,21 +46,27 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {   
-        buildIndex = currentScene.buildIndex;
-        if(shotsRemaining == 0 && !Turret.instance.currentlyShooting)
-        {
-            if(buildIndex == 1)
+        buildIndex = currentScene.buildIndex * -1;
+        if(shotsRemaining == 0 )
+        {  
+            Debug.Log("No more shots");
+            if(!Turret.instance.currentlyShooting)
             {
+                Debug.Log(buildIndex);
+                if(buildIndex == 1)
+                {
                 SceneManager.LoadScene(2);
                 shots = 12;
                 Scene currentScene = SceneManager.GetActiveScene ();
+                }
+                if(buildIndex == 2)
+                {
+                    SceneManager.LoadScene(3);
+                    shots = 12;
+                    Scene currentScene = SceneManager.GetActiveScene ();
+                }
             }
-            if(buildIndex == 2)
-            {
-                SceneManager.LoadScene(3);
-                shots = 12;
-                Scene currentScene = SceneManager.GetActiveScene ();
-            }
+            
         }
     }
 }

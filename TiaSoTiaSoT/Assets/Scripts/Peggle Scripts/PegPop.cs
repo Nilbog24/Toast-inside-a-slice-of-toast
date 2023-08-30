@@ -26,7 +26,7 @@ public class PegPop : MonoBehaviour
         if(refresh >= 10)
         {
             Refresh();
-            Debug.LogError("Power");
+            Debug.Log("Power");
         }
         else
         {
@@ -39,7 +39,7 @@ public class PegPop : MonoBehaviour
             if(inactiveToasts.Count >= toasts.Length)
             {
                 Refresh();
-                Debug.LogError("Wow");
+                Debug.Log("Wow");
             }
             else
                 inactiveToasts.Clear();
@@ -52,8 +52,7 @@ public class PegPop : MonoBehaviour
         {
             toast.SetActive(true);
             refresh = Random.Range(1, 11);
-            inactiveToasts.Clear();
         }
-        
+        inactiveToasts.Clear();
     }
 }

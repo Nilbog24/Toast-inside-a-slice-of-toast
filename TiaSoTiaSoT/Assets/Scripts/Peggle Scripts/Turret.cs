@@ -52,7 +52,7 @@ public class Turret : MonoBehaviour
             
             // If the player does a left click and canFire is true then canFire will become false.
             // Then the projectile will be created.
-            if(Input.GetKeyDown(KeyCode.Mouse0) && canFire)
+            if(Input.GetKeyDown(KeyCode.Mouse0) && canFire && GameManager.instance.shotsRemaining > 0)
             {
                 animator.SetTrigger("Shoot");
                 
