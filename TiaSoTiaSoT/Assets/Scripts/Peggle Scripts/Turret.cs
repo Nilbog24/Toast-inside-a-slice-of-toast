@@ -8,8 +8,7 @@ public class Turret : MonoBehaviour
 {
     // This will be used to store the camera object.
     private Camera mainCam;
-    // This will be used to store the mouse's position.
-    private Vector3 mousePos;
+    
     // This will be used to store the projectile prefab so it can be instantiated later.
     public GameObject projectilePrefab;
     // This gets the position that the arrow's going to be spawned at.
@@ -19,8 +18,12 @@ public class Turret : MonoBehaviour
     public bool currentlyShooting = false;
     private GameManager gameManager;
     
-
     public Animator animator;
+
+    void Awake()
+    {
+        
+    }
 
     // Start is called before the first frame update
     // In this method the mainCam variable will be assigned the camera component
@@ -33,15 +36,7 @@ public class Turret : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // This'll set the mousePos variable to the mouse's position.
-        mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         
-        // These three lines of code will get the wanted rotation.
-        Vector3 rotation = mousePos - transform.position;
-
-        float rotationZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
-
-        transform.rotation = Quaternion.Euler(0, 0, rotationZ+90);
 
         // This chunk of code in this if loop is the code that create the cooldown between shots.
         // First if canFire is false then the timer variable will increase with the change in time.
