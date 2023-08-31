@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         }
         else if(currentScene.name == "PeggleLvl3")
         {   
-            NewLevel(10, 500);
+            NewLevel(10, 1000);
             infoText.text = "You've found the MEGA ULTRA PEGGING TOAST CAT! Luckily you've just found an ultra orb, that can bounce and is super dense. Ganbatte!";
         }
     }
@@ -119,7 +119,8 @@ public class GameManager : MonoBehaviour
                 {
                     if(score >= scoreNeeded)
                     {
-                        //congratText = "";
+                        announcementPanel.SetActive(true);
+                        announcementText.text = "Congratulations! You've won! <br> Go back to the menu to restart, or press Quit to quit.";
                     }
                     else
                     {
