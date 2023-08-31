@@ -17,6 +17,7 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
 
     private Turret turret;
+    public int scoreBonus;
     void Start()
     {
         //  This will assign the camera component of the main camera to the maincam variable.
@@ -54,6 +55,14 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
             turret.currentlyShooting = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Toast")
+        {
+            GameManager.instance.UpdateScore(scoreBonus);
         }
     }
 }

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreNeededText;
     public TextMeshProUGUI announcementText;
     public GameObject announcementPanel;
+    public TextMeshProUGUI infoText;
     public int shots;
     public int buildIndex;
     public int scoreNeeded;
@@ -32,15 +33,18 @@ public class GameManager : MonoBehaviour
         announcementPanel.SetActive(false);
         if(currentScene.name == "PeggleLvl1")
         {
-            NewLevel(1, 100);
+            NewLevel(10, 100);
+            infoText.text = "Welcome to the pegging aspect! Press in any direction to shoot! Reach 100 score to beat this level and move on!";
         }
         else if(currentScene.name == "PeggleLvl2")
         {   
-            NewLevel(5, 125);
+            NewLevel(5, 250);
+            infoText.text = "Welcome to the second Level! You now have a Dense Orb, meaning it doesn't bounce as much as the old orb, however the density lets it get twice the score! Try it out.";
         }
         else if(currentScene.name == "PeggleLvl3")
         {   
-            NewLevel(10, 150);
+            NewLevel(10, 500);
+            infoText.text = "You've found the MEGA ULTRA PEGGING TOAST CAT! Luckily you've just found an ultra orb, that can bounce and is super dense. Ganbatte!";
         }
     }
 
@@ -111,8 +115,22 @@ public class GameManager : MonoBehaviour
                     }
                     
                 }
+                if(buildIndex == -3)
+                {
+                    if(score >= scoreNeeded)
+                    {
+                        //congratText = "";
+                    }
+                    else
+                    {
+                        announcementPanel.SetActive(true);
+                        announcementText.text = $"I'm sorry, you lost! <br> You needed a score of {scoreNeeded}! <br> You only had a score of {score}! <br>  Would you like to try again?";
+                    }
+                    
+                }
             }
             
         }
+        
     }
 }
