@@ -38,6 +38,10 @@ public class GameManager : MonoBehaviour
         {   
             NewLevel(5, 125);
         }
+        else if(currentScene.name == "PeggleLvl3")
+        {   
+            NewLevel(10, 150);
+        }
     }
 
     public void UpdateScore(int scoreToAdd)
@@ -94,17 +98,11 @@ public class GameManager : MonoBehaviour
                     }
                     
                 }
-                if(buildIndex == 2)
+                if(buildIndex == -2)
                 {
                     if(score >= scoreNeeded)
                     {
-                        shots = 5;
-                        shotsRemaining = shots + 1;
-                        UpdateScore(0);
-                        UpdateShots();
-                        Scene currentScene = SceneManager.GetActiveScene();
-                        scoreNeeded = 125;
-                        scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
+                        SceneManager.LoadScene("PeggleLvl3");
                     }
                     else
                     {
