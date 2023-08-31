@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class StartGame : MonoBehaviour
 {
     public static StartGame instance;
-    public bool isLevelOne;
 
     void Awake()
     {
@@ -15,7 +14,6 @@ public class StartGame : MonoBehaviour
     }
     void BeginGame()
     {
-        isLevelOne = true;
         SceneManager.LoadScene(1);
     }
     

@@ -24,25 +24,19 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-          
-
     }
     void Start()
     {
         Scene currentScene = SceneManager.GetActiveScene ();  
         buildIndex = currentScene.buildIndex * -1;
         announcementPanel.SetActive(false);
-        if(StartGame.instance.isLevelOne)
+        if(currentScene.name == "PeggleLvl1")
         {
-            score = 0;
-            shots = 1;
-            scoreNeeded = 100;
-            shotsRemaining = shots + 1;
-            UpdateScore(0);
-            UpdateShots();
-            scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
-            Debug.Log("Game Started!");
-            StartGame.instance.isLevelOne = false;
+            NewLevel(1, 100);
+        }
+        else if(currentScene.name == "PeggleLvl2")
+        {   
+            NewLevel(5, 125);
         }
     }
 
@@ -62,7 +56,19 @@ public class GameManager : MonoBehaviour
 
     public void Reload()
     {
-        SceneManager.LoadScene(buildIndex);
+        SceneManager.LoadScene(buildIndex*-1);
+    }
+
+    public void NewLevel(int shotAvailable, int scoreNeededToWin)
+    {
+        score = 0;
+        shots = shotAvailable;
+        scoreNeeded = scoreNeededToWin;
+        shotsRemaining = shots + 1;
+        UpdateScore(0);
+        UpdateShots();
+        scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
+        Debug.Log("Level loaded!");
     }
 
     void Update()
@@ -70,23 +76,16 @@ public class GameManager : MonoBehaviour
         
         if(shotsRemaining == 0 )
         {  
-            Debug.Log("No more shots");
             if(!Turret.instance.currentlyShooting)
             {
-                Debug.Log(buildIndex);
+                //Debug.Log(buildIndex);
                 if(buildIndex == -1)
                 {
                     if(score >= scoreNeeded)
                     {
                         SceneManager.LoadScene("PeggleLvl2");
-                        buildIndex = currentScene.buildIndex * -1;
-                        shots = 5;
-                        shotsRemaining = shots + 1;
-                        Debug.Log(shotsRemaining);
-                        UpdateScore(0);
-                        UpdateShots();
-                        scoreNeeded = 125;
-                        scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
+                        Debug.Log("Scene Loaded!");
+                        
                     }
                     else
                     {

@@ -61,11 +61,6 @@ public class Turret : MonoBehaviour
                 currentlyShooting = true;
                 GameManager.instance.UpdateShots();
             }
-            else
-            {
-                Debug.Log(canFire);
-                
-            }
         }
 
         
