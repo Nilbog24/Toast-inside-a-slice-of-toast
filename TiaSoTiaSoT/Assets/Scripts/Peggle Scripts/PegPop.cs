@@ -19,7 +19,7 @@ public class PegPop : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        GameManager.instance.UpdateScore(1);
+        GameManager.instance.UpdateScore(10);
         gameObject.SetActive(false);
         
         

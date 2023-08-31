@@ -19,22 +19,31 @@ public class GameManager : MonoBehaviour
     public int shots;
     public int buildIndex;
     public int scoreNeeded;
+    public Scene currentScene;
+    
     void Awake()
     {
         instance = this;
-        score = 0;
-        shots = 10;
-        scoreNeeded = 100;
-        shotsRemaining = shots + 1;
-        UpdateScore(0);
-        UpdateShots();
-        scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
+          
+
     }
-    public Scene currentScene;
     void Start()
     {
-        Scene currentScene = SceneManager.GetActiveScene ();    
+        Scene currentScene = SceneManager.GetActiveScene ();  
+        buildIndex = currentScene.buildIndex * -1;
         announcementPanel.SetActive(false);
+        if(StartGame.instance.isLevelOne)
+        {
+            score = 0;
+            shots = 1;
+            scoreNeeded = 100;
+            shotsRemaining = shots + 1;
+            UpdateScore(0);
+            UpdateShots();
+            scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
+            Debug.Log("Game Started!");
+            StartGame.instance.isLevelOne = false;
+        }
     }
 
     public void UpdateScore(int scoreToAdd)
@@ -58,20 +67,24 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {   
-        buildIndex = currentScene.buildIndex * -1;
+        
         if(shotsRemaining == 0 )
         {  
             Debug.Log("No more shots");
             if(!Turret.instance.currentlyShooting)
             {
                 Debug.Log(buildIndex);
-                if(buildIndex == 1)
+                if(buildIndex == -1)
                 {
                     if(score >= scoreNeeded)
                     {
-                        SceneManager.LoadScene(2);
+                        SceneManager.LoadScene("PeggleLvl2");
+                        buildIndex = currentScene.buildIndex * -1;
                         shots = 5;
-                        Scene currentScene = SceneManager.GetActiveScene ();
+                        shotsRemaining = shots + 1;
+                        Debug.Log(shotsRemaining);
+                        UpdateScore(0);
+                        UpdateShots();
                         scoreNeeded = 125;
                         scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
                     }
@@ -86,9 +99,13 @@ public class GameManager : MonoBehaviour
                 {
                     if(score >= scoreNeeded)
                     {
-                        SceneManager.LoadScene(3);
-                        shots = 12;
-                        Scene currentScene = SceneManager.GetActiveScene ();
+                        shots = 5;
+                        shotsRemaining = shots + 1;
+                        UpdateScore(0);
+                        UpdateShots();
+                        Scene currentScene = SceneManager.GetActiveScene();
+                        scoreNeeded = 125;
+                        scoreNeededText.text = $"Score Needed to Pass: {scoreNeeded}";
                     }
                     else
                     {
